@@ -15,8 +15,8 @@
 
 // CoreBrightness.framework
 // Lowers NightShift requirement: 10.13.1+
-static const uint8_t kNightShiftOriginal[] = "/System/Library/CoreServices/Language Chooser.app";
-static const uint8_t kNightShiftPatched[] = "/Volumes/Image Volume/OCLP-CLI";
+static const uint8_t kNightShiftOriginal[] = "Language Chooser.app";
+static const uint8_t kNightShiftPatched[] = "Danguage Chooser.app";
 
 static mach_vm_address_t orig_cs_validate {};
 
