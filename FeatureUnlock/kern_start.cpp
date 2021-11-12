@@ -18,8 +18,6 @@
 static const uint8_t kNightShiftOriginal[] = "/System/Library/CoreServices/Language Chooser.app/Contents/MacOS/Language Chooser";
 static const uint8_t kNightShiftPatched[] = "/Volumes/Image Volume/OCLP-CLI";
 
-static_assert(sizeof(kNightShiftOriginal) == sizeof(kNightShiftPatched), "patch size invalid");
-
 static mach_vm_address_t orig_cs_validate {};
 
 #pragma mark - Kernel patching code
@@ -31,14 +29,6 @@ static inline void searchAndPatch(const void *haystack, size_t haystackSize, con
 }
 
 #pragma mark - Patched functions
-
-// pre Big Sur
-static boolean_t patched_cs_validate_range(vnode_t vp, memory_object_t pager, memory_object_offset_t offset, const void *data, vm_size_t size, unsigned *result) {
-    char path[PATH_MAX];
-    int pathlen = PATH_MAX;
-    boolean_t res = FunctionCast(patched_cs_validate_range, orig_cs_validate)(vp, pager, offset, data, size, result);
-    return res;
-}
 
 // For Big Sur and newer
 static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_object_offset_t page_offset, const void *data, int *validated_p, int *tainted_p, int *nx_p) {
@@ -55,10 +45,7 @@ static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_o
 static void pluginStart() {
 	DBGLOG(MODULE_SHORT, "start");
 	lilu.onPatcherLoadForce([](void *user, KernelPatcher &patcher) {
-		KernelPatcher::RouteRequest csRoute =
-			getKernelVersion() >= KernelVersion::BigSur ?
-			KernelPatcher::RouteRequest("_cs_validate_page", patched_cs_validate_page, orig_cs_validate) :
-			KernelPatcher::RouteRequest("_cs_validate_range", patched_cs_validate_range, orig_cs_validate);
+		KernelPatcher::RouteRequest csRoute = KernelPatcher::RouteRequest("_cs_validate_page", patched_cs_validate_page, orig_cs_validate);
 		if (!patcher.routeMultipleLong(KernelPatcher::KernelID, &csRoute, 1))
 			SYSLOG(MODULE_SHORT, "failed to route cs validation pages");
 	});
