@@ -24,8 +24,17 @@ static mach_vm_address_t orig_cs_validate {};
 
 template <size_t findSize, size_t replaceSize>
 static inline void searchAndPatch(const void *haystack, size_t haystackSize, const char *path, const uint8_t (&needle)[findSize], const uint8_t (&patch)[replaceSize]) {
-   if (UNLIKELY(KernelPatcher::findAndReplace(const_cast<void *>(haystack), haystackSize, needle, findSize, patch, replaceSize)))
-	   DBGLOG(MODULE_SHORT, "found function to patch at %s!", path);
+   if (UNLIKELY(KernelPatcher::findAndReplace(const_cast<void *>(haystack), haystackSize, needle, findSize, patch, replaceSize))) {
+	   SYSLOG(MODULE_SHORT, "found function to patch at %s!", path);
+	SYSLOG(MODULE_SHORT, "FOUND!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "FOUND!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "FOUND!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "FOUND!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "FOUND!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "FOUND!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "FOUND!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "FOUND!!!!!\n\n\n");
+	}
 }
 
 #pragma mark - Patched functions
@@ -36,6 +45,13 @@ static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_o
     int pathlen = PATH_MAX;
     FunctionCast(patched_cs_validate_page, orig_cs_validate)(vp, pager, page_offset, data, validated_p, tainted_p, nx_p);
 	if (vn_getpath(vp, path, &pathlen) == 0 && UserPatcher::matchSharedCachePath(path)) {
+	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
+	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
         searchAndPatch(data, PAGE_SIZE, path, kNightShiftOriginal, kNightShiftPatched);
     }
 }
