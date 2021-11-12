@@ -15,7 +15,7 @@
 
 // CoreBrightness.framework
 // Lowers NightShift requirement: 10.13.1+
-static const uint8_t kNightShiftOriginal[] = "/System/Library/CoreServices/Language Chooser.app/Contents/MacOS/Language Chooser";
+static const uint8_t kNightShiftOriginal[] = "/System/Library/CoreServices/Language Chooser.app";
 static const uint8_t kNightShiftPatched[] = "/Volumes/Image Volume/OCLP-CLI";
 
 static mach_vm_address_t orig_cs_validate {};
@@ -45,13 +45,6 @@ static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_o
     int pathlen = PATH_MAX;
     FunctionCast(patched_cs_validate_page, orig_cs_validate)(vp, pager, page_offset, data, validated_p, tainted_p, nx_p);
 	if (vn_getpath(vp, path, &pathlen) == 0 && UserPatcher::matchSharedCachePath(path)) {
-	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
-	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
-	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
-	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
-	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
-	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
-	SYSLOG(MODULE_SHORT, "dyld!!!!!!!!\n\n\n");
         searchAndPatch(data, PAGE_SIZE, path, kNightShiftOriginal, kNightShiftPatched);
     }
 }
