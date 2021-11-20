@@ -8,6 +8,8 @@
 #include <Headers/plugin_start.hpp>
 #include <Headers/kern_api.hpp>
 #include <Headers/kern_user.hpp>
+#include <sys/vm.h>
+
 
 #define MODULE_SHORT "dcslv"
 
@@ -17,7 +19,20 @@ static mach_vm_address_t orig_cs_require_lv {};
 
 #pragma mark - Patched functions
 
-static boolean_t patched_cs_require_lv(void *proc) {
+static boolean_t patched_cs_require_lv(struct proc *p) {
+    if (p == NULL) {
+	    p = current_proc();
+    }
+    if (p == NULL) {
+	    return 0;
+    }
+    if (p->p_name) {
+	        DBGLOG(MODULE_SHORT, "processing process %s (%d)", p->p_name, p->p_pid);
+    } else {
+	        DBGLOG(MODULE_SHORT, "processing process (no name) (%d)", p->p_pid);
+    }	    
+    // if (p != NULL && (p->p_name && strstr(p_name, "Music");
+    // auto currproc = reinterpret_cast<procref *>(current_proc());
     return 0;
 }
 
